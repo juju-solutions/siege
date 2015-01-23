@@ -1,0 +1,16 @@
+#!/usr/bin/python
+
+import setup
+setup.pre_install()
+
+from charmhelpers.core import hookenv
+from charmhelpers import fetch
+
+
+def install():
+    hookenv.log('Installing benchmark-siege')
+    fetch.apt_install(fetch.filter_installed_packages(['siege']))
+
+
+if __name__ == "__main__":
+    install()

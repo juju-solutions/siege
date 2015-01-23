@@ -1,0 +1,13 @@
+name: benchmark-siege
+summary: <Fill in summary here>
+maintainer: Adam Israel <adam.israel@canonical.com>
+description: |
+  <Multi-line description here>
+tags:
+  # Replace "misc" with one or more whitelisted tags from this list:
+  # https://juju.ubuntu.com/docs/authors-charm-metadata.html#charm-metadata
+  - misc
+subordinate: false
+requires:
+  website:
+    interface: http

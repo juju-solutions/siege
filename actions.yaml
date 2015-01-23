@@ -1,0 +1,7 @@
+custom:
+  description: "Custom siege tests"
+  params:
+    tests:
+      description: "The parameters to pass to siege."
+      type: string
+      default: ""
