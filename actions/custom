@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -eux
+
+# benchmark-start
+action-set meta.start=`date -u +"%Y-%m-%dT%H:%M:%SZ"`
+
+params="$@"
+
+siege -R /home/ubuntu/.siegerc $params -q --log=/tmp/siege.log
+
+# export
+
+# Parse the results
+`cat /tmp/siege.log | python $CHARM_DIR/actions/siege2json.py`
+
+# Log command-line used?
+# action-set results.raw = "`cat /tmp/siege.log`"
+
+rm /tmp/siege.log
+
+# benchmark-end
+action-set meta.stop=`date -u +"%Y-%m-%dT%H:%M:%SZ"`

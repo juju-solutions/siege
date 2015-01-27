@@ -1,6 +1,6 @@
 verbose = false
-csv = true
+csv = false
 concurrent = 25
 time = 1M
-url = http://{{ website[0]['hostname'] }}:{{ website[0]['port'] }}
+url = http://{{ website[0]['hostname'] }}:{{ website[0]['port'] }}/
 file =
