@@ -41,7 +41,7 @@ def manage():
                 # actions.write_config,
                 helpers.render_template(
                     source='siegerc',
-                    target='/home/ubuntu/.siegerc'),
+                    target='%s/.siegerc' % hookenv.charm_dir()),
                 actions.log_start,
             ],
             'data_lost': [

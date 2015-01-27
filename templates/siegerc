@@ -1,3 +1,4 @@
+# Setup sane defaults for running siege against the related unit
 verbose = false
 csv = false
 concurrent = 25
