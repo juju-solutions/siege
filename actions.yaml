@@ -1,7 +1,7 @@
-custom:
-  description: "Custom siege tests"
+siege:
+  description: Standard siege benchmark.
   params:
-    tests:
-      description: "The parameters to pass to siege."
+    extra-config:
+      description: Arguments to pass to siege.
       type: string
       default: ""

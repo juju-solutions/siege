@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -eux
+
+# benchmark-start
+action-set meta.start=`date -u +"%Y-%m-%dT%H:%M:%SZ"`
+
+extra=`action-get extra-config`
+run=`date +%s`
+
+mkdir -p /opt/siege/results/$run
+
+siege -R $CHARM_DIR/.siegerc $extra -q --log=/opt/siege/results/$run/siege.log
+
+# Parse the results
+`cat /opt/siege/results/$run/siege.log | python $CHARM_DIR/actions/siege2json.py`
+
+# benchmark-end
+action-set meta.stop=`date -u +"%Y-%m-%dT%H:%M:%SZ"`
