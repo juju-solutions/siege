@@ -8,10 +8,16 @@ import unittest
 class TestDeployment(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.deployment = amulet.Deployment()
+        cls.deployment = amulet.Deployment(series='trusty')
+
+        cls.deployment.add('mysql')
+        cls.deployment.configure('mysql', {'dataset-size':'256M'})
+        cls.deployment.add('mediawiki')
+        cls.deployment.relate('mediawiki:db', 'mysql:db')
 
         cls.deployment.add('benchmark-siege')
-        cls.deployment.expose('benchmark-siege')
+        cls.deployment.relate('mediawiki:website', 'benchmark-siege:website')
+        cls.deployment.expose('mediawiki')
 
         try:
             cls.deployment.setup(timeout=900)
