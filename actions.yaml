@@ -1,7 +1,17 @@
 siege:
   description: Standard siege benchmark.
   params:
-    extra-config:
-      description: Arguments to pass to siege.
+    concurrent:
+      description: The number of simultaneous users to stress the web server with.
+      type: integer
+      default: 25
+    time:
+      description: The time to run the siege test for.
       type: string
-      default: ""
+      default: "1M"
+    delay:
+      description: |
+        Delay each simulated user for a random number of seconds between
+        one and DELAY seconds.
+      type: integer
+      default: 3
