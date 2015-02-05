@@ -8,15 +8,15 @@ Requires Juju 1.23 or later
 juju bootstrap
 juju deploy mysql
 juju deploy mediawiki
-juju deploy benchmark-siege
+juju deploy siege
 juju add-relation mysql:db mediawiki:db
-juju add-relation benchmark-siege:website mediawiki:website
+juju add-relation siege:website mediawiki:website
 ```
 
 # List actions
 
 ```
-$ juju action defined benchmark-siege
+$ juju action defined siege
 siege: Standard siege benchmark.
 ```
 
@@ -25,13 +25,13 @@ siege: Standard siege benchmark.
 Choose an action to run, like `siege`
 
 ```
-$ juju action do benchmark-siege/0 siege
+$ juju action do siege/0 siege
 Action queued with id: 097d714d-455e-47d6-8cc9-3eef5f9d5cad
 ```
 
 # Run siege with custom parameters
 ```
-$ juju action do benchmark-siege/0 siege extra-config=-t30s -c 30
+$ juju action do siege/0 siege extra-config=-t30s -c 30
 ```
 
 # Check on actions
