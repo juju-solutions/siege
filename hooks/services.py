@@ -7,6 +7,16 @@ import actions
 from charmhelpers.core import hookenv
 
 
+# class BenchmarkRelation(helpers.RelationContext):
+#     required_keys = ['hostname', 'port', 'graphite_port', 'graphite_endpoint', 'api_port']
+#
+#     def provided_data(self):
+#         hookenv.log('BenchmarkRelation is alive!')
+#         return {
+#             'actions': ['asdf', 'qwer']
+#         }
+
+
 class HttpRelation(helpers.HttpRelation):
     """
     Override HttpRelation to fix the required keys, and return the port
@@ -38,15 +48,25 @@ def manage():
                 HttpRelation(),
             ],
             'data_ready': [
-                # actions.write_config,
                 helpers.render_template(
                     source='siegerc',
                     target='%s/.siegerc' % hookenv.charm_dir()),
                 actions.log_start,
             ],
             'data_lost': [
-                actions.debug_my_hook
             ],
         },
+        {
+            'service': 'benchmark',
+            'required_data': [
+                actions.BenchmarkRelation(),
+            ],
+            'data_ready': [
+                actions.write_benchmark_config,
+                helpers.render_template(
+                    source='benchmark.conf',
+                    target='/etc/benchmark.conf'),
+            ]
+        }
     ])
     manager.manage()
