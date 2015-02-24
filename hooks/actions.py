@@ -2,19 +2,6 @@ from charmhelpers.core import hookenv
 from charmhelpers.core.services import helpers
 
 
-class BenchmarkRelation(helpers.RelationContext):
-    interface = 'benchmark'
-    name = 'benchmark'
-
-    required_keys = [
-        'hostname',
-        'port',
-        'graphite_port',
-        'graphite_endpoint',
-        'api_port'
-    ]
-
-
 def write_benchmark_config(service_name):
     if hookenv.in_relation_hook():
         hookenv.log('write_benchmark_config')

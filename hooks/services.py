@@ -7,14 +7,45 @@ import actions
 from charmhelpers.core import hookenv
 
 
-# class BenchmarkRelation(helpers.RelationContext):
-#     required_keys = ['hostname', 'port', 'graphite_port', 'graphite_endpoint', 'api_port']
-#
-#     def provided_data(self):
-#         hookenv.log('BenchmarkRelation is alive!')
-#         return {
-#             'actions': ['asdf', 'qwer']
-#         }
+class BenchmarkRelation(helpers.RelationContext):
+    """
+    Add documentation and examples of using this, before submitting to CH
+
+    i.e.,
+
+    BenchmarkRelation(actions=['my', 'list', 'of', 'benchmark', 'actions'])
+
+    """
+
+    interface = 'benchmark'
+    name = 'benchmark'
+
+    required_keys = [
+        'hostname',
+        'port',
+        'graphite_port',
+        'graphite_endpoint',
+        'api_port'
+    ]
+
+    def __init__(self, name=None, additional_required_keys=None, actions=None):
+        # Store actions
+        if actions:
+            for action in actions:
+                hookenv.log("Action: %s" % action)
+        super(BenchmarkRelation, self).__init__(
+            name, additional_required_keys
+        )
+
+    def is_ready(self):
+        ready = super(BenchmarkRelation, self).is_ready()
+        if ready:
+            f = open('/etc/benchmark.conf', 'w')
+            data = self['benchmark'][0]
+            for key in data:
+                f.write("%s=%s\n" % (key, data[key]))
+            f.close()
+        return ready
 
 
 class HttpRelation(helpers.HttpRelation):
@@ -46,6 +77,7 @@ def manage():
                 #       helpers.MysqlRelation(),
                 # helpers.RequiredConfig('hostname', 'port'),
                 HttpRelation(),
+                BenchmarkRelation(actions=['list', 'of', 'actions']),
             ],
             'data_ready': [
                 helpers.render_template(
@@ -56,17 +88,5 @@ def manage():
             'data_lost': [
             ],
         },
-        {
-            'service': 'benchmark',
-            'required_data': [
-                actions.BenchmarkRelation(),
-            ],
-            'data_ready': [
-                actions.write_benchmark_config,
-                helpers.render_template(
-                    source='benchmark.conf',
-                    target='/etc/benchmark.conf'),
-            ]
-        }
     ])
     manager.manage()
