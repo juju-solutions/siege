@@ -7,16 +7,54 @@ import actions
 from charmhelpers.core import hookenv
 
 
+class Benchmark():
+    """
+    Helper class for the `benchmark` interface.
+
+    :param list actions: Define the actions that are also benchmarks
+
+    From inside the benchmark-relation-changed hook, you would
+    Benchmark(['memory', 'cpu', 'disk', 'smoke', 'custom'])
+
+    """
+
+    required_keys = [
+        'hostname',
+        'port',
+        'graphite_port',
+        'graphite_endpoint',
+        'api_port'
+    ]
+
+    def __init__(self, benchmarks=None):
+        if benchmarks is not None:
+            for rid in sorted(hookenv.relation_ids('benchmark')):
+                hookenv.relation_set(relation_id=rid, relation_settings={
+                    'benchmarks': ",".join(benchmarks)
+                })
+
+        # Check the relation data
+        config = {}
+        for key in self.required_keys:
+            val = hookenv.relation_get(key)
+            if val is not None:
+                config[key] = val
+            else:
+                # We don't have all of the required keys
+                config = {}
+                break
+
+        if len(config):
+            f = open('/etc/benchmark.conf', 'w')
+            for key, val in config.iteritems():
+                f.write("%s=%s\n" % (key, val))
+            f.close()
+
+
 class BenchmarkRelation(helpers.RelationContext):
     """
-    Add documentation and examples of using this, before submitting to CH
-
-    i.e.,
-
-    BenchmarkRelation(actions=['my', 'list', 'of', 'benchmark', 'actions'])
-
+    Stub interface to connect the ServiceFramework to a Benchmark relation
     """
-
     interface = 'benchmark'
     name = 'benchmark'
 
@@ -28,23 +66,17 @@ class BenchmarkRelation(helpers.RelationContext):
         'api_port'
     ]
 
-    def __init__(self, name=None, additional_required_keys=None, actions=None):
-        # Store actions
-        if actions:
-            for action in actions:
-                hookenv.log("Action: %s" % action)
-        super(BenchmarkRelation, self).__init__(
-            name, additional_required_keys
-        )
+    benchmarks = []
+
+    def __init__(self, benchmarks=None):
+        self.benchmarks = benchmarks
+        super(BenchmarkRelation, self).__init__(self.name, None)
 
     def is_ready(self):
         ready = super(BenchmarkRelation, self).is_ready()
-        if ready:
-            f = open('/etc/benchmark.conf', 'w')
-            data = self['benchmark'][0]
-            for key in data:
-                f.write("%s=%s\n" % (key, data[key]))
-            f.close()
+        if ready and self.benchmarks:
+            Benchmark(self.benchmarks)
+
         return ready
 
 
@@ -70,6 +102,7 @@ def manage():
             'provided_data': [
                 # context managers for provided relations
                 # e.g.: helpers.HttpRelation()
+                # BenchmarkRelation(['list', 'of', 'actions1']),
             ],
             'required_data': [
                 # data (contexts) required to start the service
@@ -77,7 +110,7 @@ def manage():
                 #       helpers.MysqlRelation(),
                 # helpers.RequiredConfig('hostname', 'port'),
                 HttpRelation(),
-                BenchmarkRelation(actions=['list', 'of', 'actions']),
+                BenchmarkRelation(['siege']),
             ],
             'data_ready': [
                 helpers.render_template(
