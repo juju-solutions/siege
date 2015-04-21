@@ -41,15 +41,17 @@ class BenchmarkRelation(helpers.RelationContext):
         return ready
 
 
-class HttpRelation(helpers.HttpRelation):
+class HttpRelation(helpers.RelationContext):
     """
     Override HttpRelation to fix the required keys, and return the port
     provided by the relation, rather than the hard-coded port 80
     """
+    name = 'website'
+    interface = 'http'
     required_keys = ['hostname', 'port']
 
     def __init__(self, *args, **kwargs):
-        helpers.HttpRelation.__init__(self, *args, **kwargs)
+        helpers.RelationContext.__init__(self, *args, **kwargs)
 
     def provide_data(self):
         return {
@@ -73,7 +75,8 @@ def manage():
             'data_ready': [
                 helpers.render_template(
                     source='siegerc',
-                    target='%s/.siegerc' % hookenv.charm_dir()),
+                    target='%s/.siegerc' % hookenv.charm_dir()
+                ),
                 actions.log_start,
             ],
             'data_lost': [
