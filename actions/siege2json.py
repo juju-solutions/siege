@@ -45,6 +45,16 @@ def parse_siege_output():
     for key in results:
         action_set("results.%s" % key, results[key])
 
+    # Set the composite key
+    action_set(
+        "meta.composite",
+        {'value': results['transfer-rate'], 'units': 'trans/second'}
+    )
+    action_set(
+        "meta.composite.direction",
+        'desc'
+    )
+
 
 if __name__ == "__main__":
     parse_siege_output()
