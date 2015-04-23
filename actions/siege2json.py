@@ -34,10 +34,10 @@ def parse_siege_output():
     results['timestamp'] = {'value': data[0], 'units': ''}
     results['transactions'] = {'value': data[1], 'units': 'hits'}
     results['elapsed'] = {'value': data[2], 'units': 'secs'}
-    results['transfered'] = {'value': data[3], 'units': 'MB'}
+    results['transfered'] = {'value': data[3], 'units': 'bytes'}
     results['response-time'] = {'value': data[4], 'units': 'secs'}
     results['transfer-rate'] = {'value': data[5], 'units': 'trans/sec'}
-    results['throughput'] = {'value': data[6], 'units': 'MB/sec'}
+    results['throughput'] = {'value': data[6], 'units': 'bytes/sec'}
     results['concurrent'] = {'value': data[7], 'units': ''}
     results['okay'] = {'value': data[8], 'units': ''}
     results['failed'] = {'value': data[9], 'units': ''}
