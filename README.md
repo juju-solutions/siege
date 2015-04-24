@@ -31,7 +31,7 @@ Action queued with id: 097d714d-455e-47d6-8cc9-3eef5f9d5cad
 
 # Run siege with custom parameters
 ```
-$ juju action do siege/0 siege extra-config=-t30s -c 30
+$ juju action do siege/0 siege time=30s concurrency=30
 ```
 
 # Check on actions

@@ -11,3 +11,5 @@ subordinate: false
 requires:
   website:
     interface: http
+  benchmark:
+    interface: benchmark

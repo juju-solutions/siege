@@ -2,7 +2,7 @@
 
 set -eux
 
-benchmark-start || true
+chlp benchmark-start || true
 
 
 # action-get doesn't currently return the defined default values
@@ -19,4 +19,4 @@ siege -R $CHARM_DIR/.siegerc -t ${runtime:-1M} -c ${concurrency:-25} -d ${delay:
 # Parse the results
 `cat /opt/siege/results/$run/siege.log | python $CHARM_DIR/actions/siege2json.py`
 
-benchmark-finish || true
+chlp benchmark-finish || true
