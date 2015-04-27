@@ -45,15 +45,23 @@ def parse_siege_output():
     for key in results:
         action_set("results.%s" % key, results[key])
 
-    # Set the composite key
-    action_set(
-        "meta.composite",
-        {'value': results['transfer-rate'], 'units': 'trans/second'}
-    )
-    action_set(
-        "meta.composite.direction",
-        'desc'
-    )
+    try:
+        from charmhelpers.contrib.benchmark import Benchmark
+        Benchmark.set_composite_score(
+            results['transfer-rate'],
+            'trans/second',
+            'desc'
+        )
+    except:
+        # Set the composite key
+        action_set(
+            "meta.composite",
+            {
+                'value': results['transfer-rate'],
+                'units': 'trans/second',
+                'direction': 'desc'
+            }
+        )
 
 
 if __name__ == "__main__":
