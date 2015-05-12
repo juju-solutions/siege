@@ -48,7 +48,7 @@ def parse_siege_output():
     try:
         from charmhelpers.contrib.benchmark import Benchmark
         Benchmark.set_composite_score(
-            results['transfer-rate'],
+            results['transfer-rate']['value'],
             'trans/second',
             'desc'
         )
@@ -57,7 +57,7 @@ def parse_siege_output():
         action_set(
             "meta.composite",
             {
-                'value': results['transfer-rate'],
+                'value': results['transfer-rate']['value'],
                 'units': 'trans/second',
                 'direction': 'desc'
             }
