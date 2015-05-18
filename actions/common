@@ -1,0 +1,12 @@
+# install charmbenchmark from pip
+
+# Make sure charmbenchmark is installed
+function install_charmbenchmark() {
+    apt-get install -y python-pip
+    pip install charm-benchmark
+}
+
+function benchmark_actions() {
+    # Append the name of other benchmarks here
+    benchmark-actions siege
+}
