@@ -6,6 +6,7 @@ and reformat them as JSON for sending back to juju
 import sys
 import subprocess
 import re
+from charmbenchmark import Benchmark
 
 
 def action_set(key, val):
@@ -45,15 +46,24 @@ def parse_siege_output():
     for key in results:
         action_set("results.%s" % key, results[key])
 
-    # Set the composite key
-    action_set(
-        "meta.composite",
-        {'value': results['transfer-rate'], 'units': 'trans/second'}
-    )
-    action_set(
-        "meta.composite.direction",
+    # try:
+        # charmbenchmark.set_composite_score
+        # from charmhelpers.contrib.benchmark import Benchmark
+    Benchmark.set_composite_score(
+        results['transfer-rate']['value'],
+        'trans/second',
         'desc'
     )
+    # except:
+    #     # Set the composite key
+    #     action_set(
+    #         "meta.composite",
+    #         {
+    #             'value': results['transfer-rate']['value'],
+    #             'units': 'trans/second',
+    #             'direction': 'desc'
+    #         }
+    #     )
 
 
 if __name__ == "__main__":
