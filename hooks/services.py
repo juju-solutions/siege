@@ -2,10 +2,20 @@
 
 from charmhelpers.core.services.base import ServiceManager
 from charmhelpers.core.services import helpers
-from charmhelpers.contrib.benchmark import Benchmark
 
 import actions
 from charmhelpers.core import hookenv
+
+try:
+    from charmbenchmark import Benchmark
+except ImportError:
+    import subprocess
+    from charmhelpers.fetch import apt_install
+
+    apt_install('python-pip', fatal=True)
+    cmd = ['pip', 'install', '-U', 'charm-benchmark']
+    subprocess.call(cmd)
+    from charmbenchmark import Benchmark
 
 
 class BenchmarkRelation(helpers.RelationContext):
