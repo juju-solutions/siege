@@ -25,14 +25,6 @@ class BenchmarkRelation(helpers.RelationContext):
     interface = 'benchmark'
     name = 'benchmark'
 
-    required_keys = [
-        'hostname',
-        'port',
-        'graphite_port',
-        'graphite_endpoint',
-        'api_port'
-    ]
-
     benchmarks = []
 
     def __init__(self, *args):
@@ -43,12 +35,6 @@ class BenchmarkRelation(helpers.RelationContext):
             Benchmark(self.benchmarks)
 
         helpers.RelationContext.__init__(self, self.name)
-
-    def is_ready(self):
-        ready = super(BenchmarkRelation, self).is_ready()
-        if ready and self.benchmarks:
-            Benchmark(self.benchmarks)
-        return ready
 
 
 class HttpRelation(helpers.RelationContext):
@@ -80,7 +66,6 @@ def manage():
             ],
             'required_data': [
                 HttpRelation(),
-                BenchmarkRelation(),
             ],
             'data_ready': [
                 helpers.render_template(
