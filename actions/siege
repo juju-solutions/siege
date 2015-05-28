@@ -2,8 +2,6 @@
 
 set -eux
 
-apt-get install -y python-pip && pip install -U charm-benchmark
-
 runtime=`action-get time`
 concurrency=`action-get concurrency`
 delay=`action-get delay`
