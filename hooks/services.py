@@ -2,10 +2,20 @@
 
 from charmhelpers.core.services.base import ServiceManager
 from charmhelpers.core.services import helpers
-from charmhelpers.contrib.benchmark import Benchmark
 
 import actions
 from charmhelpers.core import hookenv
+
+try:
+    from charmbenchmark import Benchmark
+except ImportError:
+    import subprocess
+    from charmhelpers.fetch import apt_install
+
+    apt_install('python-pip', fatal=True)
+    cmd = ['pip', 'install', '-U', 'charm-benchmark']
+    subprocess.call(cmd)
+    from charmbenchmark import Benchmark
 
 
 class BenchmarkRelation(helpers.RelationContext):
@@ -14,14 +24,6 @@ class BenchmarkRelation(helpers.RelationContext):
     """
     interface = 'benchmark'
     name = 'benchmark'
-
-    required_keys = [
-        'hostname',
-        'port',
-        'graphite_port',
-        'graphite_endpoint',
-        'api_port'
-    ]
 
     benchmarks = []
 
@@ -33,12 +35,6 @@ class BenchmarkRelation(helpers.RelationContext):
             Benchmark(self.benchmarks)
 
         helpers.RelationContext.__init__(self, self.name)
-
-    def is_ready(self):
-        ready = super(BenchmarkRelation, self).is_ready()
-        if ready and self.benchmarks:
-            Benchmark(self.benchmarks)
-        return ready
 
 
 class HttpRelation(helpers.RelationContext):
@@ -70,7 +66,6 @@ def manage():
             ],
             'required_data': [
                 HttpRelation(),
-                BenchmarkRelation(),
             ],
             'data_ready': [
                 helpers.render_template(

@@ -2,17 +2,6 @@
 
 set -eux
 
-
-. actions/common
-
-install_charmbenchmark
-benchmark_actions || true
-
-benchmark-start || true
-
-
-# action-get doesn't currently return the defined default values
-# so we'll need to add them to the siege cmd below.
 runtime=`action-get time`
 concurrency=`action-get concurrency`
 delay=`action-get delay`
@@ -20,9 +9,11 @@ run=`date +%s`
 
 mkdir -p /opt/siege/results/$run
 
+benchmark-start
+
 siege -R $CHARM_DIR/.siegerc -t ${runtime:-1M} -c ${concurrency:-25} -d ${delay:-3} -q --log=/opt/siege/results/$run/siege.log
+
+benchmark-finish
 
 # Parse the results
 `cat /opt/siege/results/$run/siege.log | python $CHARM_DIR/actions/siege2json.py`
-
-benchmark-finish || true
