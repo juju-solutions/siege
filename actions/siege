@@ -5,14 +5,45 @@ set -eux
 runtime=`action-get time`
 concurrency=`action-get concurrency`
 delay=`action-get delay`
+unit=`action-get unit`
+path=`action-get path`
 run=`date +%s`
 
 mkdir -p /opt/siege/results/$run
 
+relations=()
+relation=""
+peer_unit=""
+hostname=""
+
+# Sniff out the proper relation and unit
+if [[ ! -z $unit ]]; then
+    relations=$(relation-ids website)
+
+    for relation in ${relations}; do
+        peer_unit=$(relation-list -r ${relation})
+        if [ "$peer_unit" == "$unit" ]; then
+            break
+        else
+            peer_unit=""
+        fi
+    done
+else
+    relations=($(relation-ids website))
+    relation=${relations[0]}
+    peer_unit=$(relation-list -r ${relation})
+fi
+
+if [[ -z $peer_unit ]]; then
+    action-fail "No unit found."
+    exit
+fi
+
+hostname=$(relation-get -r ${relation} hostname ${peer_unit})
+url=http://${hostname}${path}
+
 benchmark-start
-
-siege -R $CHARM_DIR/.siegerc -t ${runtime:-1M} -c ${concurrency:-25} -d ${delay:-3} -q --log=/opt/siege/results/$run/siege.log
-
+siege -R $CHARM_DIR/.siegerc -t ${runtime:-1M} -c ${concurrency:-25} -d ${delay:-3} -q --log=/opt/siege/results/$run/siege.log ${url}
 benchmark-finish
 
 # Parse the results

@@ -15,3 +15,13 @@ siege:
         one and DELAY seconds.
       type: integer
       default: 3
+    unit:
+      description: |
+        The unit to run siege against. If none is specified, siege will be
+        run against all units related on the website interface.
+      type: string
+      default: ""
+    path:
+      description: The path on the website to test.
+      type: string
+      default: "/"
